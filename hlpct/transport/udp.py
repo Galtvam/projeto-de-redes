@@ -1,5 +1,4 @@
 import socket
-import address_encoding
 
 class UDP:
     '''
@@ -17,7 +16,10 @@ class UDP:
             socket.AF_INET,
             socket.SOCK_DGRAM
         )
-        return newtSocket
+        return newSocket
+
+    def close(self):
+        self._mainSocket.close()
 
     def setPort(self, port:int):
         '''
@@ -26,11 +28,10 @@ class UDP:
         self.portNumber = port
         self._mainSocket.bind(('',port))
 
-    def stream(self, applicationPackage:bin):
+    def stream(self, applicationPackage:bin, ipDst:str, portDst:int):
         '''
         transmite o pacote da aplicação o destino contido no header
         '''
-        ipDst , portDst = address_encoding.extractIpAndPort(applicationPackage)
         addressDst = (ipDst, portDst)
         self._mainSocket.sendto(applicationPackage, addressDst)
 

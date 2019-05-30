@@ -1,5 +1,4 @@
 import socket
-import address_encoding
 
 class TCP:
     '''
@@ -19,6 +18,9 @@ class TCP:
         )
         return newSocket
 
+    def close(self):
+        self._mainSocket.close()
+
     def setPort(self, port:int):
         '''
         atribui uma porta ao Socket da instancia TCP
@@ -26,7 +28,7 @@ class TCP:
         self.portNumber = port
         self._mainSocket.bind(('',port))
 
-    def stream(self, applicationPackage:bin, option:str='only', definedSocket=None):
+    def stream(self, applicationPackage:bin, ipDst:str, portDst:int, option:str='only', definedSocket=None):
         '''
         transmite o pacote da aplicação o destino contido no header
 
@@ -36,7 +38,6 @@ class TCP:
                     'lock' recebe um socket ja conectado
                         $ definedSocket - corresponde a um socket ja conectado
         '''
-        ipDst , portDst = address_encoding.extractIpAndPort(applicationPackage)
         addressDst = (ipDst, portDst)
         if option == 'lock':
             definedSocket.send(applicationPackage)
@@ -46,9 +47,6 @@ class TCP:
             self._mainSocket.send(applicationPackage)
             if option == 'adap':
                 return self._adapStream()
-            else:
-                self._mainSocket.close()
-                self.__init__(self.portNumber)
 
     def _adapStream(self):
         packageReceived = self._mainSocket.recv(80000)
@@ -56,7 +54,7 @@ class TCP:
         self.__init__(self.portNumber)
         return packageReceived
 
-    def listening(self, option:str='only', applicationPackage:bin=None, numberOfConnections:int=1, bufferSize:int=80000):
+    def listening(self, option:str='only', numberOfConnections:int=1, bufferSize:int=80000):
         '''
         coloca o socket no modo de listen na porta padrão definida no socket
 
@@ -70,4 +68,4 @@ class TCP:
         if option == 'adap':
             return connectionSocket, addressSrc[0], addressSrc[1] , packageReceived
         else:
-            connectionSocket.close()
+            return addressSrc[0], addressSrc[1] , packageReceived
