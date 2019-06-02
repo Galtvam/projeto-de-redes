@@ -48,7 +48,7 @@ class P2P:
             if len(self.peersList) == 0:
                 message = bytes('','utf-8')
             else:
-                message = listOfPeersToBinConverte(self.pearList)
+                message = listOfPeersToBinConverte(self.peersList)
             socketResponse.close()
             socketDistributer = TCP(5554)
             socketDistributer.stream(
