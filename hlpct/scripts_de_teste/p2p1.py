@@ -35,7 +35,12 @@ class P2P:
             return peersList
         else:
             peersList = binToListOfIpsDecode(peers)
+            myIp = peersList.pop()
             peersList.append(address)
+            try:
+                peersList.remove(myIp)
+            except:
+                pass
             return peersList
 
     def _p2pInitializeResponse(self):
@@ -45,7 +50,9 @@ class P2P:
             if len(self.peersList) == 0:
                 message = bytes('','utf-8')
             else:
-                message = listOfPeersToBinConverte(self.peersList)
+                copyPeersList = self.peersList
+                copypeersList.append(addressReceiver[0])
+                message = listOfPeersToBinConverte(copypeersList)
             socketResponse.close()
             socketDistributer = TCP()
             socketDistributer.stream(
@@ -56,7 +63,8 @@ class P2P:
                 definedSocket=None
             )
 
-            self.peersList.append(addressReceiver[0])
+            if not (addressReceiver[0] in self.peersList):
+                self.peersList.append(addressReceiver[0])
 
 if __name__ == '__main__':
     s = P2P()

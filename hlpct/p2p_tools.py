@@ -12,7 +12,7 @@ def listOfPeersToBinConverte(peersList:list):
 
 def binToListOfIpsDecode(encodedList:bin):
     listOfIps = []
-    for index in range(0,(len(listOfIps)-1),4):
+    for i in range(0,(len(encodedList)-1),4):
         ip = binToIp(encodedList[i:i+4])
         listOfIps.append(ip)
     return listOfIps
