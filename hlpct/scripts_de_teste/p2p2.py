@@ -53,7 +53,7 @@ class P2P:
             if len(self.peersList) == 0:
                 message = bytes('','utf-8')
             else:
-                copyPeersList = self.peersList
+                copyPeersList = self.peersList[:]
                 copypeersList.append(addressReceiver[0])
                 message = listOfPeersToBinConverte(copypeersList)
             socketResponse.close()
@@ -66,7 +66,7 @@ class P2P:
                 definedSocket=None
             )
 
-            if not (addressReceiver[0] in self.peersList):
+            if not(addressReceiver[0] in self.peersList):
                 self.peersList.append(addressReceiver[0])
 
 if __name__ == '__main__':
