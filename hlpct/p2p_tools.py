@@ -1,3 +1,5 @@
+#coding: utf-8
+
 from address_encoding import *
 
 def listOfPeersToBinConverte(peersList:list):

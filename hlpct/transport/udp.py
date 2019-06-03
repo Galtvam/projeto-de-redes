@@ -1,10 +1,12 @@
+#coding: utf-8
+
 import socket
 
 class UDP:
     '''
     instancia UDP com interface cliente e servidor
     '''
-    def __init__(self, port:int):
+    def __init__(self, port:int=None):
         self._mainSocket = self._socketInitialize()
         self.setPort(port)
 
@@ -21,12 +23,17 @@ class UDP:
     def close(self):
         self._mainSocket.close()
 
-    def setPort(self, port:int):
+    def reestart(self):
+        self._mainSocket.close()
+        self.__init__(port=self.portNumber)
+
+    def setPort(self, port:int=None):
         '''
         atribui uma porta ao Socket da instancia UDP
         '''
         self.portNumber = port
-        self._mainSocket.bind(('',port))
+        if port is not None:
+            self._mainSocket.bind(('',port))
 
     def stream(self, applicationPackage:bin, ipDst:str, portDst:int):
         '''

@@ -1,3 +1,5 @@
+#coding: utf-8
+
 from transport.tcp import TCP
 from transport.udp import UDP
 
@@ -30,16 +32,14 @@ class P2P:
             numberOfConnections=1,
             bufferSize=80000
         )
-        if port == 5554:
-            if len(peers) < 4:
-                peersList = []
-                peersList.append(address)
-                return peersList
-            else:
-                peersList = binToListOfIpsDecode(peers)
-                peersList.append(address)
-                return peersList
-        #self._p2pInitialize()
+        if len(peers) < 4:
+            peersList = []
+            peersList.append(address)
+            return peersList
+        else:
+            peersList = binToListOfIpsDecode(peers)
+            peersList.append(address)
+            return peersList
 
     def _p2pInitializeResponse(self):
         socketResponse = UDP(5554)
@@ -48,9 +48,9 @@ class P2P:
             if len(self.peersList) == 0:
                 message = bytes('','utf-8')
             else:
-                message = listOfPeersToBinConverte(self.peersList)
+                message = listOfPeersToBinConverte(self.pearList)
             socketResponse.close()
-            socketDistributer = TCP(5554)
+            socketDistributer = TCP()
             socketDistributer.stream(
                 applicationPackage=message,
                 ipDst=addressReceiver[0],

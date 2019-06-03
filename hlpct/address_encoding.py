@@ -1,3 +1,5 @@
+#coding: utf-8
+
 import struct
 
 def ipToBin(ip:str):
