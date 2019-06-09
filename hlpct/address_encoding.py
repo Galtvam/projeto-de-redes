@@ -30,24 +30,18 @@ def binToIp(binIp:bin):
     ip = '.'.join(ipSegments)
     return ip
 
-def portToBin(port:int):
-    '''
-    converte uma porta numa sequencia de 2 bytes
-    '''
-    return struct.pack('H', port)
+def idToBin(id:str):
+    translate = b''
+    for i in range(10):
+        try:
+            translate += struct.pack('B', ord(id[i]))
+        except:
+            translate += struct.pack('B', 0)
+    return translate
 
-def binToPort(portBin:bin):
-    '''
-    converte uma sequencia de 2 bytes no numero da porta
-    '''
-    port = struct.unpack('H', portBin)
-    return port[0]
-
-def extractIpAndPort(applicationPackage:bin):
-    '''
-    extrai o IP e a Porta do pacote HLPCT retornando uma string
-    e um inteiro respectivamente.
-    '''
-    ipDst = binToIp(applicationPackage[:4])
-    portDst = binToPort(applicationPackage[4:6])
-    return ipDst , portDst
+def binToId(id:bin):
+    translate = ''
+    for b in id:
+        if b != 0:
+            translate += chr(b)
+    return translate
