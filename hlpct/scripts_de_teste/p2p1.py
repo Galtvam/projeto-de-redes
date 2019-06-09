@@ -37,7 +37,7 @@ class P2P:
         myInformations[0][2] = self.inRoom
         myInformations[0][3] = self.idRoom
         for client in peersList[:-1]:
-            if client[0] == myInformations[0]:
+            if client[0] == myInformations[0][0]:
                 peersList.remove(client)
         returnList = myInformations + peersList
         return returnList
