@@ -3,7 +3,6 @@
 from .hlpct.package_coding import *
 
 from .transport.tcp import TCP
-from .transport.udp import UDP
 
 from .tools.p2p_tools import *
 
@@ -32,5 +31,3 @@ def apresentationResponse(peersList, addressReceived, newPeerID):
             flag = False
     if flag:
         peersList.append([addressReceived[0], binToId(newPeerID), False, None])
-
-    return peersList

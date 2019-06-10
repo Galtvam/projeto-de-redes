@@ -31,13 +31,16 @@ class P2P:
             self._p2pInitializeResponse(addressReceived, newPeerID)
 
         elif commandID == b'00010':
-            self._ping()
+            self._pingRead(addressReceived, message)
 
     def _p2pInitializeResponse(self, addressReceived, newPeerID):
-        self.peersList = apresentationResponse(self.peersList, addressReceived, newPeerID)
+        apresentationResponse(self.peersList, addressReceived, newPeerID)
 
-    def _ping(self, addressReceive):
-        pass
+    def _pingRead(self, addressReceived, message):
+        peersPing(addressReceived, message, self.peersList)
+
+    def _pingSend(self):
+        pingPeers(self.myId, self.inRoom, self.idRoom)
 
     def playing(self, idRoom:int):
         self.inRoom = True

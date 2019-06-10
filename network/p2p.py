@@ -4,6 +4,7 @@ from core.hlpct.package_coding import *
 
 from core.apresentation import *
 from core.hear import *
+from core.pinging import *
 
 class P2P:
     def __init__(self, myId):
@@ -29,19 +30,22 @@ class P2P:
         request, addressReceived = responseSocket.listening()
         responseSocket.close()
 
-        commandID, flag, newPeerID = packageDisassembler(request)
+        commandID, flag, message = packageDisassembler(request)
 
         if commandID == b'00001':
-            self._p2pInitializeResponse(addressReceived, newPeerID)
+            self._p2pInitializeResponse(addressReceived, message)
 
         elif commandID == b'00010':
-            self._ping()
+            self._pingRead(addressReceived, message)
 
     def _p2pInitializeResponse(self, addressReceived, newPeerID):
-        self.peersList = apresentationResponse(self.peersList, addressReceived, newPeerID)
+        apresentationResponse(self.peersList, addressReceived, newPeerID)
 
-    def _ping(self, addressReceive):
-        pass
+    def _pingRead(self, addressReceived, message):
+        peersPing(addressReceived, message, self.peersList)
+
+    def _pingSend(self):
+        pingPeers(self.myId, self.inRoom, self.idRoom)
 
     def playing(self, idRoom:int):
         self.inRoom = True
