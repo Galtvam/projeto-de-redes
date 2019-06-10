@@ -1,6 +1,6 @@
 #coding: utf-8
 
-from address_encoding import *
+from .address_encoding import *
 
 """
 cada ip na lista de IPs segue o farmato (ip:string, id:string, inRoom:bool, idRoom:int)
