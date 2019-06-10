@@ -25,7 +25,7 @@ def apresentation(myId, inRoom, idRoom):
     socketInit.close()
     socketReceiver = TCP(5555)
     try:
-        socketReceiver._mainSocket.settimeout(5) #espera 5 segundos por uma conexão
+        socketReceiver._mainSocket.settimeout(1) #espera 1 segundos por uma conexão
         address, port, receivedPackage = socketReceiver.listening(
             option='only',
             numberOfConnections=1,
@@ -40,7 +40,7 @@ def apresentation(myId, inRoom, idRoom):
             myInformations[0][1] = myId
             myInformations[0][2] = inRoom
             myInformations[0][3] = idRoom
-            for client in peersList[:-1]:
+            for client in peersList[:]:
                 if client[0] == myInformations[0][0]:
                     peersList.remove(client)
             returnList = myInformations + peersList
@@ -49,14 +49,10 @@ def apresentation(myId, inRoom, idRoom):
             pass
 
     except:
-        option = int(input("Detecção de IP automatica(1) ou manual(2): "))
         try:
-            if option == 1:
-                myIp = getIp()
-            else:
-                raise 'noInternet'
+            myIp = getIp()
         except:
-            print("Sem internet, insira manualmente o IP!")
+            print("Detecção automatica de IP falhou, insira manualmente o IP!")
             myIp = input('IP: ')
 
         returnList = [[myIp, myId, inRoom, idRoom]]

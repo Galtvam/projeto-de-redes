@@ -41,10 +41,16 @@ def peersPing(addressReceived, message, peersList, pingList):
     else:
         idRoom = None
     refreshedPeer = [addressReceived[0], id, flagRoom, idRoom]
-
+    
+    inList = False
     for peer in peersList:
         if peer[0] == addressReceived[0]:
             peer = refreshedPeer
+            inList = True
+            break
+
+    if not inList:
+        peersList.append(refreshedPeer)
     pingList[addressReceived[0]] = time.time()
 
 def removeOfflinePeers(peersList:list, pingList:dict):

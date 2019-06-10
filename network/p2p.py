@@ -7,6 +7,8 @@ from core.hear import *
 from core.pinging import *
 
 from core.threads.hearing_thread import *
+from core.threads.apresentation_thread import *
+from core.threads.ping_thread import *
 
 class P2P:
     def __init__(self, myId):
@@ -30,18 +32,25 @@ class P2P:
         return apresentation(self.myId, self.inRoom, self.idRoom)
 
     def _hearing(self):
+        conversationList = []
+        responseSocket = UDP(5554)
         while 1:
-            responseSocket = UDP(5554)
-            request, addressReceived = responseSocket.listening()
-            responseSocket.close()
+            try:
+                request, addressReceived = responseSocket.listening()
 
-            commandID, flag, message = packageDisassembler(request)
+                commandID, flag, message = packageDisassembler(request)
 
-            if commandID == b'00001':
-                self._p2pInitializeResponse(addressReceived, message)
+                if commandID == b'00001':
+                    t = apresentationThread(self._p2pInitializeResponse, addressReceived, message)
+                    conversationList.append(t)
+                    t.start()
 
-            elif commandID == b'00010':
-                self._pingRead(addressReceived, message)
+                elif commandID == b'00010':
+                    t = pingReadThread(self._pingRead, addressReceived, message)
+                    conversationList.append(t)
+                    t.start()
+            except:
+                responseSocket.close()
 
     def _p2pInitializeResponse(self, addressReceived, newPeerID):
         apresentationResponse(self.peersList, addressReceived, newPeerID)

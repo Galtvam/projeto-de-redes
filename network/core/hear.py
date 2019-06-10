@@ -17,7 +17,7 @@ def apresentationResponse(peersList, addressReceived, newPeerID):
         message
     )
     socketDistributer = TCP()
-    socketDistributer._mainSocket.settimeout(10)
+    socketDistributer._mainSocket.settimeout(1.5)
     socketDistributer.stream(
         applicationPackage=package,
         ipDst=addressReceived[0],

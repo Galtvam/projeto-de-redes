@@ -2,7 +2,7 @@
 
 from threading import Thread
 
-class apresentationThread(Thread):
+class pingReadThread(Thread):
 
     def __init__ (self, method, addressReceived, message):
           Thread.__init__(self)
