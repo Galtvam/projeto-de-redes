@@ -4,12 +4,14 @@ from core.hlpct.package_coding import *
 
 from core.apresentation import *
 from core.hear import *
+from core.pinging import *
 
 class P2P:
     def __init__(self):
         self.myId = 'servidor'
         self.inRoom = False
         self.idRoom = None
+        self.pingList = {}
         self.peersList = [['192.168.24.102',self.myId, self.inRoom, self.idRoom]]
 
         print('Servidor de testes OK')
@@ -25,10 +27,10 @@ class P2P:
         request, addressReceived = responseSocket.listening()
         responseSocket.close()
 
-        commandID, flag, newPeerID = packageDisassembler(request)
+        commandID, flag, message = packageDisassembler(request)
 
         if commandID == b'00001':
-            self._p2pInitializeResponse(addressReceived, newPeerID)
+            self._p2pInitializeResponse(addressReceived, message)
 
         elif commandID == b'00010':
             self._pingRead(addressReceived, message)
@@ -37,11 +39,14 @@ class P2P:
         apresentationResponse(self.peersList, addressReceived, newPeerID)
 
     def _pingRead(self, addressReceived, message):
-        peersPing(addressReceived, message, self.peersList)
+        peersPing(addressReceived, message, self.peersList, self.pingList)
 
     def _pingSend(self):
-        pingPeers(self.myId, self.inRoom, self.idRoom)
+        pingPeers(self.myId, self.inRoom, self.idRoom, self.peersList)
 
+    def _offlineDetection(self):
+        removeOfflinePeers(self.peersList, self.pingList)
+        
     def playing(self, idRoom:int):
         self.inRoom = True
         self.idRoom = idRoom

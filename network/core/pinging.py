@@ -1,13 +1,13 @@
 #coding: utf-8
+import time
 
 from .hlpct.package_coding import *
 
 from .transport.udp import UDP
 
-from .tools.address_encoding import *
+from .tools.p2p_tools import *
 
-def pingPeers(myID:str, inRoom:bool, idRoom:int):
-    pingerSocket = UDP()
+def pingPeers(myID:str, inRoom:bool, idRoom:int, peersList:list):
     idMessage = idToBin(myID)
     if inRoom:
         flagRoom = b'1'
@@ -22,16 +22,14 @@ def pingPeers(myID:str, inRoom:bool, idRoom:int):
         False,
         message
     )
-    pingerSocket.stream(
-        applicationPackage=package,
-        ipDst='224.0.0.1',
-        portDst=5554
+    multicastToMyNetwork(
+        peersList,
+        package,
+        5554
     )
 
-    pingerSocket.close()
 
-
-def peersPing(addressReceived, message, peersList):
+def peersPing(addressReceived, message, peersList, pingList):
     encodedID = message[:10]
     encodedFlagRoom = message[10]
     encodedIdRoom = message[11:]
@@ -47,3 +45,12 @@ def peersPing(addressReceived, message, peersList):
     for peer in peersList:
         if peer[0] == addressReceived[0]:
             peer = refreshedPeer
+    pingList[addressReceived[0]] = time.time()
+
+def removeOfflinePeers(peersList:list, pingList:dict):
+    nowTime = time.time()
+    iterableList = list(pingList.keys())
+    for peerKey in iterableList:
+        if (nowTime - pingList[peerKey]) > 2.5:
+            removeOfPeersList(peersList, peerKey)
+            del pingList[peerKey]

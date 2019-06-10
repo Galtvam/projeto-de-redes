@@ -8,20 +8,20 @@ from core.pinging import *
 
 class P2P:
     def __init__(self):
-        self.myId = 'cliente'
+        self.myId = 'servidor'
         self.inRoom = False
         self.idRoom = None
         self.pingList = {}
+        self.peersList = [['192.168.24.102',self.myId, self.inRoom, self.idRoom]]
 
-        self.peersList = self._p2pInitialize()
-        print('Status OK')
-        print(self.peersList)
-
-        #entra no modo servidor
-        while 1:
+        print('Servidor de testes OK')
+        for k in range(5):
             self._hearing()
             print(self.peersList)
-
+        print(self.pingList)
+        time.sleep(5)
+        self._offlineDetection()
+        print(self.pingList)
 
     def _p2pInitialize(self):
         return apresentation(self.myId, self.inRoom, self.idRoom)
@@ -58,6 +58,7 @@ class P2P:
     def leaving(self):
         self.inRoom = False
         self.idRoom = None
+
 
 if __name__ == '__main__':
     s = P2P()

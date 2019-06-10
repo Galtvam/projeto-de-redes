@@ -13,6 +13,7 @@ class P2P:
         self.myId = 'pinging'
         self.inRoom = False
         self.idRoom = None
+        self.pingList = {}
 
         self.peersList = self._p2pInitialize()
         print('Status OK')
@@ -44,10 +45,13 @@ class P2P:
         apresentationResponse(self.peersList, addressReceived, newPeerID)
 
     def _pingRead(self, addressReceived, message):
-        peersPing(addressReceived, message, self.peersList)
+        peersPing(addressReceived, message, self.peersList, self.pingList)
 
     def _pingSend(self):
-        pingPeers(self.myId, self.inRoom, self.idRoom)
+        pingPeers(self.myId, self.inRoom, self.idRoom, self.peersList)
+
+    def _offlineDetection(self):
+        removeOfflinePeers(self.peersList, self.pingList)
 
     def playing(self, idRoom:int):
         self.inRoom = True
