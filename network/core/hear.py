@@ -17,6 +17,7 @@ def apresentationResponse(peersList, addressReceived, newPeerID):
         message
     )
     socketDistributer = TCP()
+    socketDistributer._mainSocket.settimeout(10)
     socketDistributer.stream(
         applicationPackage=package,
         ipDst=addressReceived[0],
@@ -25,7 +26,7 @@ def apresentationResponse(peersList, addressReceived, newPeerID):
         definedSocket=None
     )
     flag = True
-    for peer in peersList:
+    for peer in peersList[1:]:
         if peer[0] == addressReceived[0]:
             peer[1] = binToId(newPeerID)
             flag = False
