@@ -17,6 +17,7 @@ class P2P:
         self.idRoom = None
         self.pingList = {}
         self.peersList = self._p2pInitialize()
+        self._autorizationFlag = True
 
         listen = simpleThread(self._hearing)
         ping = simpleThread(self._pingSend)
@@ -53,10 +54,10 @@ class P2P:
                 responseSocket.close()
 
     def _p2pInitializeResponse(self, addressReceived, newPeerID):
-        apresentationResponse(self.peersList, addressReceived, newPeerID)
+        apresentationResponse(self.peersList, addressReceived, newPeerID, self._autorizationFlag)
 
     def _pingRead(self, addressReceived, message):
-        peersPing(addressReceived, message, self.peersList, self.pingList)
+        peersPing(addressReceived, message, self.peersList, self.pingList, self._autorizationFlag)
 
     def _pingSend(self):
         while 1:
@@ -66,7 +67,7 @@ class P2P:
     def _offlineDetection(self):
         while 1:
             time.sleep(2.5)
-            removeOfflinePeers(self.peersList, self.pingList)
+            removeOfflinePeers(self.peersList, self.pingList, self._autorizationFlag)
 
     def playing(self, idRoom:int):
         self.inRoom = True
@@ -77,4 +78,4 @@ class P2P:
         self.idRoom = None
 
 if __name__ == '__main__':
-    s = P2P('player1')
+    s = P2P('debug')

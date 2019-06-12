@@ -29,7 +29,7 @@ def pingPeers(myID:str, inRoom:bool, idRoom:int, peersList:list):
     )
 
 
-def peersPing(addressReceived, message, peersList, pingList):
+def peersPing(addressReceived, message, peersList, pingList, autorizationFlag):
     encodedID = message[:10]
     encodedFlagRoom = message[10]
     encodedIdRoom = message[11:]
@@ -41,7 +41,12 @@ def peersPing(addressReceived, message, peersList, pingList):
     else:
         idRoom = None
     refreshedPeer = [addressReceived[0], id, flagRoom, idRoom]
-    
+
+    #checa se pode adicionar na lista
+    while not autorizationFlag:
+        time.sleep(0.1)
+
+    autorizationFlag = False
     inList = False
     for peer in peersList:
         if peer[0] == addressReceived[0]:
@@ -52,11 +57,20 @@ def peersPing(addressReceived, message, peersList, pingList):
     if not inList:
         peersList.append(refreshedPeer)
     pingList[addressReceived[0]] = time.time()
+    autorizationFlag = True
 
-def removeOfflinePeers(peersList:list, pingList:dict):
+
+def removeOfflinePeers(peersList, pingList, autorizationFlag):
     nowTime = time.time()
     iterableList = list(pingList.keys())
+
+    #checa se pode adicionar na lista
+    while not autorizationFlag:
+        time.sleep(0.1)
+
+    autorizationFlag = False
     for peerKey in iterableList:
         if (nowTime - pingList[peerKey]) > 2.5:
             removeOfPeersList(peersList, peerKey)
             del pingList[peerKey]
+    autorizationFlag = True

@@ -7,7 +7,7 @@ from .transport.tcp import TCP
 from .tools.p2p_tools import *
 
 
-def apresentationResponse(peersList, addressReceived, newPeerID):
+def apresentationResponse(peersList, addressReceived, newPeerID, autorizationFlag):
     copyPeersList = peersList[:]
     copyPeersList.append([addressReceived[0], ''])
     message = listOfPeersToBinConverte(copyPeersList)
@@ -25,6 +25,12 @@ def apresentationResponse(peersList, addressReceived, newPeerID):
         option='only',
         definedSocket=None
     )
+
+    #checa se pode adicionar na lista
+    while not autorizationFlag:
+        time.sleep(0.1)
+
+    autorizationFlag = False
     flag = True
     for peer in peersList[1:]:
         if peer[0] == addressReceived[0]:
@@ -32,3 +38,4 @@ def apresentationResponse(peersList, addressReceived, newPeerID):
             flag = False
     if flag:
         peersList.append([addressReceived[0], binToId(newPeerID), False, None])
+    autorizationFlag = Tue
