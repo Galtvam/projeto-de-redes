@@ -1,14 +1,14 @@
 #coding: utf-8
 
-from core.hlpct.package_coding import *
+from .core.hlpct.package_coding import *
 
-from core.apresentation import *
-from core.hear import *
-from core.pinging import *
+from .core.apresentation import *
+from .core.hear import *
+from .core.pinging import *
 
-from core.threads.hearing_thread import *
-from core.threads.apresentation_thread import *
-from core.threads.ping_thread import *
+from .core.threads.hearing_thread import *
+from .core.threads.apresentation_thread import *
+from .core.threads.ping_thread import *
 
 class P2P:
     def __init__(self, myId):
