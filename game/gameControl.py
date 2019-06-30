@@ -1,6 +1,6 @@
 #coding: utf-8
 
-from .core.rooms import *
+from core.rooms import *
 
 class GameDashboard:
     def __init__(self, myNickname):

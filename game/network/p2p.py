@@ -62,6 +62,8 @@ class P2P:
     def _pingSend(self):
         while 1:
             time.sleep(0.5)
+            self.peersList[0][2] = self.inRoom
+            self.peersList[0][3] = self.idRoom
             pingPeers(self.myId, self.inRoom, self.idRoom, self.peersList)
 
     def _offlineDetection(self):

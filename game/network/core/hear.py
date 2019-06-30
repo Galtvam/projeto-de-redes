@@ -38,4 +38,4 @@ def apresentationResponse(peersList, addressReceived, newPeerID, autorizationFla
             flag = False
     if flag:
         peersList.append([addressReceived[0], binToId(newPeerID), False, None])
-    autorizationFlag = Tue
+    autorizationFlag = True

@@ -7,8 +7,8 @@ class Client:
     def __init__(self, nickname):
         self.myNickname = nickname
         self.network = P2P(nickname)
-        self.room = GameDashboard()
+        self.room = GameDashboard(self.myNickname)
 
     def createRoom(self, idRoom:int, maxPlayers):
-        self.room.create(idRoom, maxPlayers, self.myNickname)
+        self.room.create(idRoom, maxPlayers)
         self.network.playing(idRoom)
