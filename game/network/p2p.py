@@ -15,6 +15,7 @@ class P2P:
         self.myId = myId
         self.inRoom = False
         self.idRoom = None
+        self._fakeID = None
         self.pingList = {}
         self.peersList = self._p2pInitialize()
         self._autorizationFlag = True
@@ -59,9 +60,20 @@ class P2P:
 
                 elif commandID == b'00100':
                     '''
-                    Solicitação para entrar na sala
+                    Recebeu uma solicitação para entrar na sala
                     '''
                     self._packagesQueue.append((addressReceived, commandID, flag))
+
+                elif commandID == b'00110':
+                    '''
+                    aceito na sala
+                    '''
+                    if bool(int(chr(flag))) == 0:
+                        self.inRoom = True
+                    else:
+                        self.idRoom = self._fakeID
+                        self._fakeID = None
+                        #fase de warmup
 
             except:
                 responseSocket.close()

@@ -19,6 +19,7 @@ class Client:
         #Inicialização das Threads
         refreshRooms.start()
 
+
     def createRoom(self, idRoom:int, maxPlayers):
         time.sleep(1)
         if not(idRoom in self.listOfRooms.keys()):
@@ -27,6 +28,18 @@ class Client:
             return True
         else:
             return False
+
+    def enterInRoom(self, idRoom:int, mode:int=0):
+        #mode corresponde a espectador (1) / jogadr (0)
+        commandID = b'00100'
+        flag = mode
+        message = b''
+        package = packageAssembler(commandID, flag, message)
+        addr = self.listOfRooms[idRoom]
+        multicastToMyNetwork([addr], package)
+        self.network._fakeID = idRoom
+
+
 
     def _refreshRoomsList(self):
         while 1:

@@ -3,6 +3,8 @@
 import time
 
 from core.rooms import *
+from network.core.hlpct.package_coding import *
+from network.core.tools.p2p_tools import *
 
 from core.tools.addressTools import *
 from core.threads.roomsList_thread import *
@@ -46,6 +48,8 @@ class GameDashboard:
             player = discoverName(package[0], self._network.peersList)
             self.room.newPlayer(player, package[0])
 
+            self._sendApprovation(package[0], self.room.numPlayers)
+
         elif package[1] == 1:
             #espectador
             pass
@@ -54,3 +58,12 @@ class GameDashboard:
             #caso não haja vaga ou jogo já iniciou e ele queira jogar
             # b'00111'
             pass
+
+    def _sendApprovation(self, addr, numPlayers):
+        '''
+        envia pacote aceitando a inclusão
+        '''
+        commandID = b'00110'
+        message = bytes(str(numPlayers), 'utf-8')
+        package = packageAssembler(commandID, 0, message)
+        multicastToMyNetwork([[addr]], package)

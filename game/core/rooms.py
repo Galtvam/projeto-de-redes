@@ -9,8 +9,7 @@ class Room:
         self.playersList = [(myNickname,None)] #lista de nicknames
 
     def newPlayer(self, nickname, addr):
-        self.playersList.append((nickname))
-
+        self.playersList.append((nickname, addr))
         #mandar pacote b'00110' contendo infos da sala
 
     def sync(self):
