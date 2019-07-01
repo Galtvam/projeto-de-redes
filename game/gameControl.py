@@ -42,7 +42,7 @@ class GameDashboard:
 
     def _approveEntry(self, package):
         if (self.hosting and
-            (package[1] == 0) and
+            (int(chr(package[1])) == 0) and
             not(self.room._start) and
             (len(self.room.playersList) < self.room.numPlayers)
         ):
@@ -51,7 +51,7 @@ class GameDashboard:
 
             self._sendApprovation(package[0], self.room.numPlayers)
 
-        elif package[1] == 1:
+        elif int(chr(package[1])) == 1:
             #espectador
             pass
 
