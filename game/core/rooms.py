@@ -14,3 +14,4 @@ class Room:
 
     def sync(self, listOfPlayers):
         self.playersList = listOfPlayers
+        self._start = True

@@ -32,7 +32,9 @@ class GameDashboard:
 
     def startMatch(self):
         numberOfPlayers = len(self.room.playersList)
-        if numberOfPlayers >= 3:
+        ''' linha de teste '''
+        if numberOfPlayers >= 2:
+            self.room._start = True
             self._sendStartMatch(numberOfPlayers)
         else:
             return False
@@ -47,7 +49,7 @@ class GameDashboard:
                 if package[1] == b'00100':
                     self._approveEntry(package)
                 if package[1] == b'00110':
-                    self._sync(message)
+                    self._sync(package)
 
     def _approveEntry(self, package):
         if (self.hosting and
@@ -93,13 +95,14 @@ class GameDashboard:
         '''
         commandID = b'00110'
         flag = b'1'
-        message = bin(numberOfPlayers)
+        message = bytes(str(numberOfPlayers), 'utf-8')
         package = packageAssembler(commandID, flag, message)
         players = self.room.playersList[1:]
         multicastToMyNetwork(players, package, match=True)
 
-    def _sync(self, message):
-        numberOfPlayerinMatch = int(message)
+    def _sync(self, pakcage):
+        message = package[3]
+        numberOfPlayerinMatch = int(chr(message))
         roomID = self._network.idRoom
         playersList = extractPlayersInRoom(roomID, self._network.peerList[1:])
 
