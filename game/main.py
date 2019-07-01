@@ -11,7 +11,7 @@ class Client:
         self.myNickname = nickname
         self.listOfRooms = {}
         self.network = P2P(nickname)
-        self.room = GameDashboard(self.myNickname)
+        self.room = GameDashboard(self.myNickname, self.network)
 
         #Theads
         refreshRooms = simpleThread(self._refreshRoomsList)

@@ -19,10 +19,16 @@ class P2P:
         self.peersList = self._p2pInitialize()
         self._autorizationFlag = True
 
+        #pacotes aguardando leitura
+        #(addressReceived, commandID, flag, message)
+        self._packagesQueue = []
+
+        #Threads
         listen = simpleThread(self._hearing)
         ping = simpleThread(self._pingSend)
         offline = simpleThread(self._offlineDetection)
 
+        #Inicialização das Threads
         listen.start()
         ping.start()
         offline.start()
@@ -50,6 +56,13 @@ class P2P:
                     t = pingReadThread(self._pingRead, addressReceived, message)
                     conversationList.append(t)
                     t.start()
+
+                elif commandID == b'00100':
+                    '''
+                    Solicitação para entrar na sala
+                    '''
+                    self._packagesQueue.append((addressReceived, commandID, flag))
+
             except:
                 responseSocket.close()
 

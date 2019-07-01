@@ -3,10 +3,15 @@
 class Room:
     def __init__(self, ID:int, numberOfPlayers:int, myNickname):
         self.ID = ID
-        self.numPlayers = numberOfPlayers
-        start = False
+        self.numPlayers = numberOfPlayers #numero max
+        self._start = False
 
-        playersList = [myNickname] #lista de nicknames
+        self.playersList = [(myNickname,None)] #lista de nicknames
 
-    def newPlayer(self, nickname):
+    def newPlayer(self, nickname, addr):
+        self.playersList.append((nickname))
+
+        #mandar pacote b'00110' contendo infos da sala
+
+    def sync(self):
         pass
