@@ -26,14 +26,25 @@ def binToListOfIpsDecode(encodedList:bin):
         listOfIps.append(peer)
     return listOfIps
 
-def multicastToMyNetwork(peersList, package, port=5554):
+def multicastToMyNetwork(peersList, package, port=5554, match=False):
+    '''
+    match usado para enviar pacote b'00110' flag 1
+    '''
     senderSocket = UDP()
-    for peer in peersList:
-        senderSocket.stream(
-            applicationPackage=package,
-            ipDst=peer[0],
-            portDst=port
-        )
+    if not(match):
+        for peer in peersList:
+            senderSocket.stream(
+                applicationPackage=package,
+                ipDst=peer[0],
+                portDst=port
+            )
+    else:
+        for peer in peersList:
+            senderSocket.stream(
+                applicationPackage=package,
+                ipDst=peer[1],
+                portDst=port
+            )
     senderSocket.close()
 
 def removeOfPeersList(peersList, address):

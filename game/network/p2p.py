@@ -73,7 +73,12 @@ class P2P:
                     else:
                         self.idRoom = self._fakeID
                         self._fakeID = None
-                        #fase de warmup
+                        self._packagesQueue.append((addressReceived, commandID, flag, message))
+
+                elif commandID == b'00111':
+                    self.inRoom = False
+                    self._fakeID = None
+                    print('Falha ao entrar na partida')
 
             except:
                 print('Ocorreu um erro fatal, reabra o seu jogo!')

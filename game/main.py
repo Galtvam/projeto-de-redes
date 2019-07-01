@@ -37,8 +37,8 @@ class Client:
         package = packageAssembler(commandID, flag, message)
         addr = self.listOfRooms[idRoom]
         multicastToMyNetwork([addr], package)
+        #anota no fakeID o ID da sala em questão
         self.network._fakeID = idRoom
-
 
 
     def _refreshRoomsList(self):

@@ -30,6 +30,13 @@ class GameDashboard:
         self.gaming = True
         self.hosting = True
 
+    def startMatch(self):
+        numberOfPlayers = len(self.room.playersList)
+        if numberOfPlayers >= 3:
+            self._sendStartMatch(numberOfPlayers)
+        else:
+            return False
+
     def _checkPackages(self):
         while 1:
             time.sleep(0.1)
@@ -39,6 +46,8 @@ class GameDashboard:
 
                 if package[1] == b'00100':
                     self._approveEntry(package)
+                if package[1] == b'00110':
+                    self._sync(message)
 
     def _approveEntry(self, package):
         if (self.hosting and
@@ -58,7 +67,7 @@ class GameDashboard:
         else:
             #caso não haja vaga ou jogo já iniciou e ele queira jogar
             # b'00111'
-            pass
+            self._sendReject(package[0])
 
     def _sendApprovation(self, addr, numPlayers):
         '''
@@ -68,3 +77,31 @@ class GameDashboard:
         message = bytes(str(numPlayers), 'utf-8')
         package = packageAssembler(commandID, 0, message)
         multicastToMyNetwork([addr], package)
+
+    def _sendReject(self, addr):
+        '''
+        envia pacote rejeitando a inclusão
+        '''
+        commandID = b'00111'
+        message = b''
+        package = packageAssembler(commandID, 0, message)
+        multicastToMyNetwork([addr], package)
+
+    def _sendStartMatch(self, numberOfPlayers):
+        '''
+        envia pacote iniciando o warmup
+        '''
+        commandID = b'00110'
+        flag = b'1'
+        message = bin(numberOfPlayers)
+        package = packageAssembler(commandID, flag, message)
+        players = self.room.playersList[1:]
+        multicastToMyNetwork(players, package, match=True)
+
+    def _sync(self, message):
+        numberOfPlayerinMatch = int(message)
+        roomID = self._network.idRoom
+        playersList = extractPlayersInRoom(roomID, self._network.peerList[1:])
+
+        self.room = Room(roomID, numberOfPlayerinMatch, self.myNickname)
+        self.room.sync(playersList)

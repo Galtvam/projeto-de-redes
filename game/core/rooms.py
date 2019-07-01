@@ -12,5 +12,5 @@ class Room:
         self.playersList.append((nickname, addr))
         #mandar pacote b'00110' contendo infos da sala
 
-    def sync(self):
-        pass
+    def sync(self, listOfPlayers):
+        self.playersList = listOfPlayers
