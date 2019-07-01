@@ -46,8 +46,8 @@ class GameDashboard:
             not(self.room._start) and
             (len(self.room.playersList) < self.room.numPlayers)
         ):
-            player = discoverName(package[0], self._network.peersList)
-            self.room.newPlayer(player, package[0])
+            player = discoverName(package[0][0], self._network.peersList)
+            self.room.newPlayer(player, package[0][0])
 
             self._sendApprovation(package[0], self.room.numPlayers)
 
