@@ -38,11 +38,11 @@ class GameDashboard:
                 del self._network._packagesQueue[0]
 
                 if package[1] == b'00100':
-                    self._approveEntry(self, package)
+                    self._approveEntry(package)
 
     def _approveEntry(self, package):
         if (self.hosting and
-            (int(chr(package[1])) == 0) and
+            (int(package[2]) == 0) and
             not(self.room._start) and
             (len(self.room.playersList) < self.room.numPlayers)
         ):
@@ -51,7 +51,7 @@ class GameDashboard:
 
             self._sendApprovation(package[0], self.room.numPlayers)
 
-        elif int(chr(package[1])) == 1:
+        elif int(package[2]) == 1:
             #espectador
             pass
 
@@ -67,4 +67,4 @@ class GameDashboard:
         commandID = b'00110'
         message = bytes(str(numPlayers), 'utf-8')
         package = packageAssembler(commandID, 0, message)
-        multicastToMyNetwork([[addr]], package)
+        multicastToMyNetwork([addr], package)

@@ -37,7 +37,10 @@ def peersPing(addressReceived, message, peersList, pingList, autorizationFlag):
     id = binToId(encodedID)
     flagRoom = bool(int(chr(encodedFlagRoom)))
     if flagRoom:
-        idRoom = int(encodedIdRoom)
+        try:
+            idRoom = int(encodedIdRoom)
+        except:
+            idRoom = 'aquecimento'
     else:
         idRoom = None
     refreshedPeer = [addressReceived[0], id, flagRoom, idRoom]

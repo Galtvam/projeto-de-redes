@@ -68,7 +68,7 @@ class P2P:
                     '''
                     aceito na sala
                     '''
-                    if bool(int(chr(flag))) == 0:
+                    if int(flag) == 0:
                         self.inRoom = True
                     else:
                         self.idRoom = self._fakeID
@@ -76,6 +76,7 @@ class P2P:
                         #fase de warmup
 
             except:
+                print('Ocorreu um erro fatal, reabra o seu jogo!')
                 responseSocket.close()
 
     def _p2pInitializeResponse(self, addressReceived, newPeerID):
