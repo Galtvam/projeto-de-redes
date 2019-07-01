@@ -23,6 +23,7 @@ class GameDashboard:
         packages = simpleThread(self._checkPackages)
 
         #Inicialização das Threads
+        packages.start()
 
     def create(self, idRoom, numberMaxOfPlayers):
         self.room = Room(idRoom, numberMaxOfPlayers, self.myNickname)
@@ -31,7 +32,7 @@ class GameDashboard:
 
     def _checkPackages(self):
         while 1:
-            time.sleep(0.2)
+            time.sleep(0.1)
             if len(self._network._packagesQueue) > 0:
                 package = self._network._packagesQueue[0]
                 del self._network._packagesQueue[0]
