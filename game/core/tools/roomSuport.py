@@ -13,7 +13,7 @@ def extractPlayersInRoom(roomID, peersList):
         if peer[2] and (peer[3] == roomID):
             nickname = peer[1]
             ip = peer[0]
-            players.append((nickname, ip, None))
+            players.append([nickname, ip, None])
     return players
 
 def offlineDetection(peersList, playersList):

@@ -37,7 +37,7 @@ class GameDashboard:
     def startMatch(self):
         numberOfPlayers = len(self.room.playersList)
         ''' linha de teste '''
-        if numberOfPlayers >= 3:
+        if numberOfPlayers >= 2:
             self.room._start = True
             self.room.playersAlive = self.room.playersList
             self._sendStartMatch(numberOfPlayers)
@@ -309,7 +309,7 @@ class GameDashboard:
             if player[2] != self.room._answer and player[0] != self.room.master:
                 eliminated.append(player)
 
-        print('A resposta correta era: '+self.game._answer + '\n')
+        print('A resposta correta era: '+self.room._answer + '\n')
         for loser in eliminated:
             self.room.playersAlive.remove(loser)
             print(loser[0] + ' foi eliminado.\n')

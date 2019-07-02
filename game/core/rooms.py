@@ -9,7 +9,7 @@ class Room:
 
         # todos os jogadores
         # (nick, IP, resposta)
-        self.playersList = [(myNickname,None, None)] #lista de nicknames
+        self.playersList = [[myNickname,None, None]] #lista de nicknames
 
         # infos da partida
         # jogadores vivos
