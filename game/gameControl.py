@@ -295,7 +295,7 @@ class GameDashboard:
     def _roundResult(self):
         eliminated = []
         for player in self.game.playersAlive:
-            if player[2] != self.game._answer:
+            if player[2] != self.game._answer and player[0] != self.game.master:
                 eliminated.append(player)
 
         print('A resposta correta era: '+self.game._answer + '\n')
@@ -303,8 +303,11 @@ class GameDashboard:
             self.game.playersAlive.remove(loser)
             print(loser[0] + ' foi eliminado.\n')
 
-        # acabou o round, chama votação
-        self.poll()
+        if len(self.game.playersAlive) == 1:
+            print('Vencedor: '+self.game.playersAlive[0]+'\n')
+        else:
+            # acabou o round, chama votação
+            self.poll()
 
 
     def _stopwatch1(self):
