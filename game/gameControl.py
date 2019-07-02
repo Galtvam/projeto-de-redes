@@ -90,6 +90,10 @@ class GameDashboard:
             sizeWord = str(len(correctWord))
 
             self._sendStartRound(sizeWord, correctWord, correctDivision)
+            print('Aguardando respostas!')
+
+            timer = simpleThread(self._stopwatch2)
+            timer.start()
 
 
         else:
@@ -119,6 +123,8 @@ class GameDashboard:
                         #fora do tempo
                         print('Você excedeu o tempo para a resposta!')
 
+                    break
+
     def _reestarThread(self):
             try:
                 packages = simpleThread(self._checkPackages)
@@ -145,7 +151,7 @@ class GameDashboard:
                     word, answer = wordPackageExtractor(package[2])
                     self.room.word = word
                     self.room._answer = answer
-                    self.startRound = True
+                    self.room.startRound = True
 
     def _approveEntry(self, package):
         if (self.hosting and
@@ -189,7 +195,6 @@ class GameDashboard:
         commandID = b'00111'
         message = b' '
         package = packageAssembler(commandID, 0, message)
-        print(package)
         multicastToMyNetwork([addr], package)
 
     def _sendStartMatch(self, numberOfPlayers):
@@ -300,17 +305,17 @@ class GameDashboard:
 
     def _roundResult(self):
         eliminated = []
-        for player in self.game.playersAlive:
-            if player[2] != self.game._answer and player[0] != self.game.master:
+        for player in self.room.playersAlive:
+            if player[2] != self.room._answer and player[0] != self.room.master:
                 eliminated.append(player)
 
         print('A resposta correta era: '+self.game._answer + '\n')
         for loser in eliminated:
-            self.game.playersAlive.remove(loser)
+            self.room.playersAlive.remove(loser)
             print(loser[0] + ' foi eliminado.\n')
 
-        if len(self.game.playersAlive) == 1:
-            print('Vencedor: '+self.game.playersAlive[0]+'\n')
+        if len(self.room.playersAlive) == 1:
+            print('Vencedor: '+self.room.playersAlive[0]+'\n')
         else:
             # acabou o round, chama votação
             self.poll()

@@ -13,7 +13,7 @@ def extractPlayersInRoom(roomID, peersList):
         if peer[2] and (peer[3] == roomID):
             nickname = peer[1]
             ip = peer[0]
-            players.append((nickname, ip))
+            players.append((nickname, ip, None))
     return players
 
 def offlineDetection(peersList, playersList):
@@ -54,6 +54,9 @@ def wordPackageExtractor(message):
     count = int(aux)
     max = numberLen + count
     for l in message[numberLen:max]:
-        word += str(l)
-    answer = message[max:]
+        word += chr(l)
+    ans = message[max:]
+    answer = ''
+    for k in ans:
+        answer += chr(k)
     return word, answer
