@@ -37,7 +37,7 @@ class GameDashboard:
     def startMatch(self):
         numberOfPlayers = len(self.room.playersList)
         ''' linha de teste '''
-        if numberOfPlayers >= 2:
+        if numberOfPlayers >= 3:
             self.room._start = True
             self.room.playersAlive = self.room.playersList
             self._sendStartMatch(numberOfPlayers)
@@ -51,6 +51,7 @@ class GameDashboard:
     def poll(self):
         self.room.permissionToVote = True
         t = simpleThread(self._stopwatch1)
+        t.start()
 
         if len(self.room.countVotes.keys()) == 0:
             candidates = candidatesExtractor(self.room.playersAlive, self.room.master)
@@ -72,7 +73,7 @@ class GameDashboard:
                     self.room.countVotes[chose] += 1
                     self._sendVote(chose)
                 else:
-                    print('tempo de votação acabou!')
+                    print('Tempo de votação acabou!')
             except:
                 print('Voto Inválido')
 
@@ -169,7 +170,7 @@ class GameDashboard:
         players = self.room.playersList[1:]
         multicastToMyNetwork(players, package, match=True)
 
-    def _voteComputing(vote):
+    def _voteComputing(self, vote):
         try:
             self.room.countVotes[str(vote)] += 1
         except:
@@ -201,10 +202,13 @@ class GameDashboard:
             if len(winner) == 0 and self.room.countVotes[candidate] != 0:
                 winner.append(candidate)
             else:
-                if self.room.countVotes[candidate] > self.room.countVotes[winner[0]]:
-                    winner = [candidate]
-                elif self.room.countVotes[candidate] == self.room.countVotes[winner[0]]:
-                    winner.append(candidate)
+                try:
+                    if self.room.countVotes[candidate] > self.room.countVotes[winner[0]]:
+                        winner = [candidate]
+                    elif self.room.countVotes[candidate] == self.room.countVotes[winner[0]]:
+                        winner.append(candidate)
+                except:
+                    pass
 
         if len(winner) == 0:
             '''
