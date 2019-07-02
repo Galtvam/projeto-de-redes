@@ -100,6 +100,9 @@ class P2P:
                     self._fakeID = None
                     print('Falha ao entrar na partida')
 
+                elif commandID == b'01000':
+                    self._packagesQueue.append((addressReceived, commandID, message))
+
             except:
                 print('Ocorreu um erro fatal, reabra o seu jogo!')
                 responseSocket.close()
