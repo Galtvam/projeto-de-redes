@@ -25,16 +25,36 @@ class P2P:
         self._packagesQueue = []
 
         #Threads
-        listen = simpleThread(self._hearing)
-        ping = simpleThread(self._pingSend)
-        offline = simpleThread(self._offlineDetection)
+        l = simpleThread(self._listenReestart)
+        p = simpleThread(self._pingReestart)
+        o = simpleThread(self._offlineReestart)
 
         #Inicialização das Threads
-        listen.start()
-        ping.start()
-        offline.start()
+        l.start()
+        p.start()
+        o.start()
 
 
+    def _listenReestart(self):
+        try:
+            listen = simpleThread(self._hearing)
+            listen.start()
+        except:
+            self.threadReestart()
+
+    def _pingReestart(self):
+        try:
+            ping = simpleThread(self._pingSend)
+            ping.start()
+        except:
+            self._pingReestart()
+
+    def _offlineReestart(self):
+        try:
+            offline = simpleThread(self._offlineDetection)
+            offline.start()
+        except:
+            self._offlineReestart()
 
     def _p2pInitialize(self):
         return apresentation(self.myId, self.inRoom, self.idRoom)

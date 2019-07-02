@@ -30,15 +30,18 @@ class Client:
             return False
 
     def enterInRoom(self, idRoom:int, mode:int=0):
-        #mode corresponde a espectador (1) / jogadr (0)
-        commandID = b'00100'
-        flag = mode
-        message = b''
-        package = packageAssembler(commandID, flag, message)
-        addr = self.listOfRooms[idRoom]
-        multicastToMyNetwork([addr], package)
-        #anota no fakeID o ID da sala em questão
-        self.network._fakeID = idRoom
+        if not(self.room.gaming):
+            #mode corresponde a espectador (1) / jogadr (0)
+            commandID = b'00100'
+            flag = mode
+            message = b''
+            package = packageAssembler(commandID, flag, message)
+            addr = self.listOfRooms[idRoom]
+            multicastToMyNetwork([addr], package)
+            #anota no fakeID o ID da sala em questão
+            self.network._fakeID = idRoom
+        else:
+            return False
 
 
     def _refreshRoomsList(self):

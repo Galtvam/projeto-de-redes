@@ -7,6 +7,7 @@ from network.core.hlpct.package_coding import *
 from network.core.tools.p2p_tools import *
 
 from core.tools.addressTools import *
+from core.tools.roomSuport import *
 from core.threads.roomsList_thread import *
 
 class GameDashboard:
@@ -20,24 +21,36 @@ class GameDashboard:
         self._network = network
 
         #Threads
-        packages = simpleThread(self._checkPackages)
-
+        thread = simpleThread(self._reestarThread)
         #Inicialização das Threads
-        packages.start()
+        thread.start()
+        off.start()
 
     def create(self, idRoom, numberMaxOfPlayers):
         self.room = Room(idRoom, numberMaxOfPlayers, self.myNickname)
         self.gaming = True
         self.hosting = True
 
+        off = simpleThread(self._offlineRemove)
+        off.start()
+
     def startMatch(self):
         numberOfPlayers = len(self.room.playersList)
         ''' linha de teste '''
-        if numberOfPlayers >= 2:
+        if numberOfPlayers >= 3:
             self.room._start = True
             self._sendStartMatch(numberOfPlayers)
         else:
             return False
+
+    def _reestarThread(self):
+            try:
+                packages = simpleThread(self._checkPackages)
+                #Inicialização das Threads
+                packages.start()
+
+            except:
+                self._reestarThread()
 
     def _checkPackages(self):
         while 1:
@@ -85,8 +98,9 @@ class GameDashboard:
         envia pacote rejeitando a inclusão
         '''
         commandID = b'00111'
-        message = b''
+        message = b' '
         package = packageAssembler(commandID, 0, message)
+        print(package)
         multicastToMyNetwork([addr], package)
 
     def _sendStartMatch(self, numberOfPlayers):
@@ -100,11 +114,19 @@ class GameDashboard:
         players = self.room.playersList[1:]
         multicastToMyNetwork(players, package, match=True)
 
-    def _sync(self, pakcage):
+    def _sync(self, package):
         message = package[3]
-        numberOfPlayerinMatch = int(chr(message))
+        numberOfPlayerinMatch = int(message)
         roomID = self._network.idRoom
-        playersList = extractPlayersInRoom(roomID, self._network.peerList[1:])
+        playersList = extractPlayersInRoom(roomID, self._network.peersList[1:])
 
         self.room = Room(roomID, numberOfPlayerinMatch, self.myNickname)
         self.room.sync(playersList)
+
+        off = simpleThread(self._offlineRemove)
+        off.start()
+
+    def _offlineRemove(self):
+        while 1:
+            time.sleep(0.5)
+            offlineDetection(self._network.peersList, self.room.playersList)

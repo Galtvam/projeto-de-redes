@@ -13,5 +13,6 @@ class Room:
         #mandar pacote b'00110' contendo infos da sala
 
     def sync(self, listOfPlayers):
-        self.playersList = listOfPlayers
+        for player in listOfPlayers:
+            self.playersList.append(player)
         self._start = True
