@@ -37,7 +37,7 @@ class GameDashboard:
     def startMatch(self):
         numberOfPlayers = len(self.room.playersList)
         ''' linha de teste '''
-        if numberOfPlayers >= 2:
+        if numberOfPlayers >= 3:
             self.room._start = True
             self.room.playersAlive = self.room.playersList
             self._sendStartMatch(numberOfPlayers)
@@ -118,6 +118,7 @@ class GameDashboard:
                     if self.room._canAnswer:
                         #dentro do Tempo
                         self.room.playersList[0][2] = userAnswer
+                        self._sendAnswer(userAnswer)
 
                     else:
                         #fora do tempo
@@ -152,6 +153,11 @@ class GameDashboard:
                     self.room.word = word
                     self.room._answer = answer
                     self.room.startRound = True
+                elif package[1] == b'10001':
+                    origin = package[0][0]
+                    nameOrigin = discoverName(origin, self._network.peersList)
+                    self._answerComputing(nameOrigin, package[2])
+
 
     def _approveEntry(self, package):
         if (self.hosting and
@@ -231,6 +237,18 @@ class GameDashboard:
         players = self.room.playersList[1:]
         multicastToMyNetwork(players, package, match=True)
 
+    def _sendAnswer(self, answer):
+        '''
+        envia pacote com o voto
+        '''
+        commandID = b'10001'
+        flag = b'0'
+        message = bytes(str(answer), 'utf-8')
+        package = packageAssembler(commandID, flag, message)
+        players = self.room.playersList[1:]
+        multicastToMyNetwork(players, package, match=True)
+
+
     def _voteComputing(self, vote):
         try:
             print(str('vote'))
@@ -303,10 +321,19 @@ class GameDashboard:
             print('O novo líder é: ' + str(self.room.master) + '\n')
             self._startRound()
 
+    def _answerComputing(self, name, answer):
+        word = ''
+        for l in answer:
+            word += chr(l)
+        for user in self.room.playersAlive:
+            if user[0] == name:
+                user[2] = word
+                break
+
     def _roundResult(self):
         eliminated = []
         for player in self.room.playersAlive:
-            if player[2] != self.room._answer and player[0] != self.room.master:
+            if (player[2] != self.room._answer) and (player[0] != self.room.master):
                 eliminated.append(player)
 
         print('A resposta correta era: '+self.room._answer + '\n')
@@ -315,7 +342,7 @@ class GameDashboard:
             print(loser[0] + ' foi eliminado.\n')
 
         if len(self.room.playersAlive) == 1:
-            print('Vencedor: '+self.room.playersAlive[0]+'\n')
+            print('Vencedor: '+self.room.playersAlive[0][0]+'\n')
         else:
             # acabou o round, chama votação
             self.poll()
