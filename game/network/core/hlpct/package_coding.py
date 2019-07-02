@@ -16,16 +16,8 @@ def packageAssembler(operationID:bin, flag:bool, message:bin):
     else:
         flagPck = b'0'
 
-    if operationID == b'00001':
-        return b'00001' + flagPck + message
-    elif operationID == b'00010':
-        return b'00010' + flagPck + message
-    elif operationID == b'00011':
-        return b'00011' + flagPck + message
-    elif operationID == b'00100':
-        return b'00100' + flagPck + message
-    elif operationID == b'00110':
-        return b'00110' + flagPck + message
+    return operationID + flagPck + message
+
 
 
 
