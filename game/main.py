@@ -51,7 +51,7 @@ class Client:
         self.network.idRoom = None
         self.room.gaming = False
         self.room.hosting = False
-        self.room.room = False
+        self.room.room = None
 
 
     def _refreshRoomsList(self):

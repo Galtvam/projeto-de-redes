@@ -56,13 +56,15 @@ class GameDashboard:
         if len(self.room.countVotes.keys()) == 0:
             candidates = candidatesExtractor(self.room.playersAlive, self.room.master)
             if len(candidates) == 1:
-                ''', inicia ela.
+                '''
                 Só tem duas pessoas jogando
                 '''
                 self.room.permissionToVote = False
                 self.room.countVotes[candidates[0]] = 1
-            for person in candidates:
-                self.room.countVotes[person] = 0
+
+            else:
+                for person in candidates:
+                    self.room.countVotes[person] = 0
 
         if len(candidates) > 1:
             beautifulPrintCandidates(candidates)
@@ -96,25 +98,26 @@ class GameDashboard:
             while not(self.room.startRound):
                 time.sleep(0.5)
 
-            if self.room.playersList[0] in self.room.playersAlive:
-                # estou jogando ainda
-                self.room._canAnswer = True
+            for alives in self.room.playersAlive:
+                if self.myNickname == alives[0]:
+                    # estou jogando ainda
+                    self.room._canAnswer = True
 
-                #tempo da rodada
-                timer = simpleThread(self._stopwatch2)
-                timer.start()
+                    #tempo da rodada
+                    timer = simpleThread(self._stopwatch2)
+                    timer.start()
 
-                #posso jofar
-                print('Faça a divisão silabica da palavra: '+self.room.word+'\n')
-                print('OBS: As silabas devem ser separadas por "-"\n')
-                userAnswer = input('resposta: ')
-                if self.room._canAnswer:
-                    #dentro do Tempo
-                    self.room.playersList[0][2] = userAnswer
+                    #posso jofar
+                    print('Faça a divisão silabica da palavra: '+self.room.word+'\n')
+                    print('OBS: As silabas devem ser separadas por "-"\n')
+                    userAnswer = input('resposta: ')
+                    if self.room._canAnswer:
+                        #dentro do Tempo
+                        self.room.playersList[0][2] = userAnswer
 
-                else:
-                    #fora do tempo
-                    print('Você excedeu o tempo para a resposta!')
+                    else:
+                        #fora do tempo
+                        print('Você excedeu o tempo para a resposta!')
 
     def _reestarThread(self):
             try:
@@ -246,14 +249,17 @@ class GameDashboard:
         self.poll()
 
     def _offlineRemove(self):
-        while 1:
-            time.sleep(0.5)
-            offlineDetection(self._network.peersList, self.room.playersList)
+        try:
+            while 1:
+                time.sleep(0.5)
+                offlineDetection(self._network.peersList, self.room.playersList)
+        except:
+            pass
 
     def _pollResult(self):
         winner = []
         for candidate in self.room.countVotes.keys():
-            if len(winner) == 0 and self.room.countVotes[candidate] != 0:
+            if len(winner) == 0 and self.room.countVotes[candidate] > 0:
                 winner.append(candidate)
             else:
                 try:

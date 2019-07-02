@@ -29,7 +29,7 @@ def offlineDetection(peersList, playersList):
 def candidatesExtractor(playersList, lastMaster):
     cand = []
     if len(playersList) > 2:
-        for player in playersList[1:]:
+        for player in playersList:
             if player[0] != lastMaster:
                 cand.append(player[0])
     else:
@@ -45,8 +45,8 @@ def wordPackageExtractor(message):
     aux = ''
     for l in message:
         try:
-            int(l)
-            aux += l
+            int(chr(l))
+            aux += chr(l)
         except:
             break
 
