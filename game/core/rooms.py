@@ -8,19 +8,28 @@ class Room:
         self._start = False
 
         # todos os jogadores
-        self.playersList = [(myNickname,None)] #lista de nicknames
+        # (nick, IP, resposta)
+        self.playersList = [(myNickname,None, None)] #lista de nicknames
 
         # infos da partida
         # jogadores vivos
         self.playersAlive = []
         # rodada
         self.round = 1
+        self.startRound = False
         # mestre
         self.lastMaster = None
         self.master = None
         # votação
         self.permissionToVote = False
         self.countVotes = {}
+
+        # resposta
+        self.word = None
+        self._answer = None
+            #flag pra poder votar
+        self._canAnswer = False
+
 
 
     def newPlayer(self, nickname, addr):

@@ -32,7 +32,7 @@ class GameDashboard:
         self.hosting = True
 
         off = simpleThread(self._offlineRemove)
-        off.start()
+        #off.start()
 
     def startMatch(self):
         numberOfPlayers = len(self.room.playersList)
@@ -56,7 +56,7 @@ class GameDashboard:
         if len(self.room.countVotes.keys()) == 0:
             candidates = candidatesExtractor(self.room.playersAlive, self.room.master)
             if len(candidates) == 1:
-                '''
+                ''', inicia ela.
                 Só tem duas pessoas jogando
                 '''
                 self.room.permissionToVote = False
@@ -79,6 +79,42 @@ class GameDashboard:
 
         self.room.permissionToVote = False
 
+    def _startRound(self):
+        if self.myNickname == self.room.master:
+            # sou o líder
+            correctWord = input('Palavra da rodada: ')
+            print('Separe as silábas por "-" \n')
+            correctDivision = input('Divisão silábica correta: ')
+            sizeWord = str(len(correctWord))
+
+            self._sendStartRound(sizeWord, correctWord, correctDivision)
+
+
+        else:
+            print('Aguardando o líder selecionar a palavra!')
+            # sou só um jogador
+            while not(self.room.startRound):
+                time.sleep(0.5)
+
+            if self.room.playersList[0] in self.room.playersAlive:
+                # estou jogando ainda
+                self.room._canAnswer = True
+
+                #tempo da rodada
+                timer = simpleThread(self._stopwatch2)
+                timer.start()
+
+                #posso jofar
+                print('Faça a divisão silabica da palavra: '+self.room.word+'\n')
+                print('OBS: As silabas devem ser separadas por "-"\n')
+                userAnswer = input('resposta: ')
+                if self.room._canAnswer:
+                    #dentro do Tempo
+                    self.room.playersList[0][2] = userAnswer
+
+                else:
+                    #fora do tempo
+                    print('Você excedeu o tempo para a resposta!')
 
     def _reestarThread(self):
             try:
@@ -102,6 +138,11 @@ class GameDashboard:
                     self._sync(package)
                 elif package[1] == b'01000':
                     self._voteComputing(package[2])
+                elif package[1] == b'10000':
+                    word, answer = wordPackageExtractor(package[2])
+                    self.room.word = word
+                    self.room._answer = answer
+                    self.startRound = True
 
     def _approveEntry(self, package):
         if (self.hosting and
@@ -156,6 +197,18 @@ class GameDashboard:
         flag = b'1'
         message = bytes(str(numberOfPlayers), 'utf-8')
         package = packageAssembler(commandID, flag, message)
+        players = self.room.playersList[1:]
+        multicastToMyNetwork(players, package, match=True)
+
+    def _sendStartRound(self, sizeWord, word, division):
+        '''
+        envia pacote com respostas da rodada, inicia a rodada
+        '''
+        commandID = b'10000'
+        flag = b'1'
+        message = sizeWord + word + division
+        encodedMessage = bytes(message, 'utf-8')
+        package = packageAssembler(commandID, flag, encodedMessage)
         players = self.room.playersList[1:]
         multicastToMyNetwork(players, package, match=True)
 
@@ -214,6 +267,11 @@ class GameDashboard:
             '''
             o jogo acaba mas não sei como
             '''
+            print('O jogo acabou sem vencedores!')
+            '''
+            Destroi a sala
+            '''
+
         elif len(winner) > 1:
             '''
             houve empate
@@ -231,6 +289,22 @@ class GameDashboard:
             self.room.master = winner[0]
             self.room.countVotes = {}
             print('O novo líder é: ' + str(self.room.master) + '\n')
+            self._startRound()
+
+    def _roundResult(self):
+        eliminated = []
+        for player in self.game.playersAlive:
+            if player[2] != self.game._answer:
+                eliminated.append(player)
+
+        print('A resposta correta era: '+self.game._answer + '\n')
+        for loser in eliminated:
+            self.game.playersAlive.remove(loser)
+            print(loser[0] + ' foi eliminado.\n')
+
+        # acabou o round, chama votação
+        self.poll()
+
 
     def _stopwatch1(self):
         '''
@@ -239,3 +313,12 @@ class GameDashboard:
         time.sleep(10)
         self.room.permissionToVote = False
         self._pollResult()
+
+    def _stopwatch2(self):
+        '''
+        Relógio da resposta em uma rodada, dura 15 segundos
+        '''
+        time.sleep(15)
+        self.room._canAnswer = False
+        ''' chama o fim da rodada '''
+        self._roundResult()

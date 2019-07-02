@@ -103,6 +103,9 @@ class P2P:
                 elif commandID == b'01000':
                     self._packagesQueue.append((addressReceived, commandID, message))
 
+                elif commandID == b'10000':
+                    self._packagesQueue.append((addressReceived, commandID, message))
+                    
             except:
                 print('Ocorreu um erro fatal, reabra o seu jogo!')
                 responseSocket.close()

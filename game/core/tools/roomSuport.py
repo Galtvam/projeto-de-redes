@@ -37,3 +37,23 @@ def candidatesExtractor(playersList, lastMaster):
             if player[0] != lastMaster:
                 cand.append(player[0])
     return cand
+
+def wordPackageExtractor(message):
+    word = ''
+    answer = ''
+
+    aux = ''
+    for l in message:
+        try:
+            int(l)
+            aux += l
+        except:
+            break
+
+    numberLen = len(aux)
+    count = int(aux)
+    max = numberLen + count
+    for l in message[numberLen:max]:
+        word += str(l)
+    answer = message[max:]
+    return word, answer
