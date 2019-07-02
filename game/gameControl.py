@@ -42,7 +42,7 @@ class GameDashboard:
             self.room.playersAlive = self.room.playersList
             self._sendStartMatch(numberOfPlayers)
             print('A partida iniciará em breve!')
-            timer.sleep(2)
+            time.sleep(2)
             self.poll()
 
         else:
@@ -53,25 +53,28 @@ class GameDashboard:
         t = simpleThread(self._stopwatch1)
 
         if len(self.room.countVotes.keys()) == 0:
-            candidates = candidates(self.room.playersAlive, self.room.master)
+            candidates = candidatesExtractor(self.room.playersAlive, self.room.master)
             if len(candidates) == 1:
                 '''
                 Só tem duas pessoas jogando
                 '''
                 self.room.permissionToVote = False
+                self.room.countVotes[candidates[0]] = 1
             for person in candidates:
                 self.room.countVotes[person] = 0
-        beautifulPrintCandidates(candidates)
-        vote = int(input('número: '))
-        try:
-            if self.room.permissionToVote:
-                chose = candidates[vote]
-                self.room.countVotes[chose] += 1
-                self._sendVote(chose)
-            else:
-                print('tempo de votação acabou!')
-        except:
-            print('Voto Inválido')
+
+        if len(candidates) > 1:
+            beautifulPrintCandidates(candidates)
+            vote = int(input('número: '))
+            try:
+                if self.room.permissionToVote:
+                    chose = candidates[vote]
+                    self.room.countVotes[chose] += 1
+                    self._sendVote(chose)
+                else:
+                    print('tempo de votação acabou!')
+            except:
+                print('Voto Inválido')
 
         self.room.permissionToVote = False
 
@@ -183,6 +186,9 @@ class GameDashboard:
 
         off = simpleThread(self._offlineRemove)
         off.start()
+
+        time.sleep(2)
+        self.poll()
 
     def _offlineRemove(self):
         while 1:
