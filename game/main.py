@@ -43,6 +43,16 @@ class Client:
         else:
             return False
 
+    def exitRoom(self):
+        '''
+        Sai da sala, se estiver em alguma
+        '''
+        self.network.inRoom = False
+        self.network.idRoom = None
+        self.room.gaming = False
+        self.room.hosting = False
+        self.room.room = False
+
 
     def _refreshRoomsList(self):
         while 1:

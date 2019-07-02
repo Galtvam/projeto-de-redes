@@ -32,7 +32,7 @@ class GameDashboard:
         self.hosting = True
 
         off = simpleThread(self._offlineRemove)
-        #off.start()
+        off.start()
 
     def startMatch(self):
         numberOfPlayers = len(self.room.playersList)
@@ -225,6 +225,7 @@ class GameDashboard:
 
     def _voteComputing(self, vote):
         try:
+            print(str('vote'))
             self.room.countVotes[str(vote)] += 1
         except:
             pass
