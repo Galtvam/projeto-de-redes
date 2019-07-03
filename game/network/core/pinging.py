@@ -23,7 +23,7 @@ def pingPeers(myID:str, inRoom:bool, idRoom:int, peersList:list):
         message
     )
     multicastToMyNetwork(
-        peersList,
+        peersList[1:],
         package,
         5554
     )
@@ -35,9 +35,12 @@ def peersPing(addressReceived, message, peersList, pingList, autorizationFlag):
     encodedIdRoom = message[11:]
 
     id = binToId(encodedID)
-    flagRoom = bool(int(encodedFlagRoom))
+    flagRoom = bool(int(chr(encodedFlagRoom)))
     if flagRoom:
-        idRoom = int(encodedIdRoom)
+        try:
+            idRoom = int(encodedIdRoom)
+        except:
+            idRoom = 'aquecimento'
     else:
         idRoom = None
     refreshedPeer = [addressReceived[0], id, flagRoom, idRoom]
@@ -48,9 +51,9 @@ def peersPing(addressReceived, message, peersList, pingList, autorizationFlag):
 
     autorizationFlag = False
     inList = False
-    for peer in peersList:
-        if peer[0] == addressReceived[0]:
-            peer = refreshedPeer
+    for peerIndex in range(len(peersList)):
+        if peersList[peerIndex][0] == addressReceived[0]:
+            peersList[peerIndex] = refreshedPeer
             inList = True
             break
 
