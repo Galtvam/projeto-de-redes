@@ -88,7 +88,7 @@ class GameDashboard:
             print('Separe as silábas por "-" \n')
             correctDivision = input('Divisão silábica correta: ')
             sizeWord = str(len(correctWord))
-
+            self.room._answer = correctDivision
             self._sendStartRound(sizeWord, correctWord, correctDivision)
             print('Aguardando respostas!')
 
