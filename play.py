@@ -30,7 +30,6 @@ class Play:
                 elif option == 1:
                     self._roomsList()
                 elif option == 2:
-                    self._roomsList()
                     self._enterRoom()
                 elif option == 3:
                     self._createRoom()
@@ -60,6 +59,7 @@ class Play:
             opt = self._c.enterInRoom(id)
             if opt:
                 print('Entrou na Sala, aguardando o líder começar!')
+                time.sleep(900)
             else:
                 print('Houve falha na tentativa de iniciar o jogo!')
                 self._menu()
@@ -91,7 +91,7 @@ class Play:
                         if opt == 1:
                             try:
                                 self._c.room.startMatch()
-                                print('acabou')
+                                time.sleep(900)
                             except:
                                 print('É necessário ao menos 3 jogadores!')
 

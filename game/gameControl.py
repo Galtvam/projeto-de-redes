@@ -293,13 +293,9 @@ class GameDashboard:
                     pass
 
         if len(winner) == 0:
-            '''
-            o jogo acaba mas não sei como
-            '''
+
             print('O jogo acabou sem vencedores!')
-            '''
-            Destroi a sala
-            '''
+            print('Obrigado por jogar, reinicie o client para se divertir mais!')
 
         elif len(winner) > 1:
             '''
@@ -342,6 +338,7 @@ class GameDashboard:
 
         if len(self.room.playersAlive) == 1:
             print('Vencedor: '+self.room.playersAlive[0][0]+'\n')
+            print('Obrigado por jogar, reinicie o client para se divertir mais!')
         else:
             # acabou o round, chama votação
             self.room.word = ''

@@ -15,7 +15,7 @@ class Room:
         # jogadores vivos
         self.playersAlive = []
         # rodada
-        self.round = 1
+        self.round = 0
         self.startRound = False
         # mestre
         self.lastMaster = None
