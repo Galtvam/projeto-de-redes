@@ -37,7 +37,7 @@ class GameDashboard:
     def startMatch(self):
         numberOfPlayers = len(self.room.playersList)
         ''' linha de teste '''
-        if numberOfPlayers >= 3:
+        if numberOfPlayers >= 2:
             self.room._start = True
             self.room.playersAlive = self.room.playersList
             self._sendStartMatch(numberOfPlayers)
@@ -109,22 +109,24 @@ class GameDashboard:
 
                     #tempo da rodada
                     timer = simpleThread(self._stopwatch2)
+                    selection = simpleThread(self._answer)
                     timer.start()
-
-                    #posso jofar
-                    print('Faça a divisão silabica da palavra: '+self.room.word+'\n')
-                    print('OBS: As silabas devem ser separadas por "-"\n')
-                    userAnswer = input('resposta: ')
-                    if self.room._canAnswer:
-                        #dentro do Tempo
-                        self.room.playersList[0][2] = userAnswer
-                        self._sendAnswer(userAnswer)
-
-                    else:
-                        #fora do tempo
-                        print('Você excedeu o tempo para a resposta!')
-
+                    selection.start()
                     break
+
+    def _answer(self):
+        #posso jofar
+        print('Faça a divisão silabica da palavra: '+self.room.word+'\n')
+        print('OBS: As silabas devem ser separadas por "-"\n')
+        userAnswer = input('resposta: ')
+        if self.room._canAnswer:
+            #dentro do Tempo
+            self.room.playersList[0][2] = userAnswer
+            self._sendAnswer(userAnswer)
+        else:
+            #fora do tempo
+            print('Você excedeu o tempo para a resposta!')
+
 
     def _reestarThread(self):
             try:
