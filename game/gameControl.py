@@ -37,7 +37,7 @@ class GameDashboard:
     def startMatch(self):
         numberOfPlayers = len(self.room.playersList)
         ''' linha de teste '''
-        if numberOfPlayers >= 2:
+        if numberOfPlayers >= 3:
             self.room._start = True
             self.room.playersAlive = self.room.playersList
             self._sendStartMatch(numberOfPlayers)
@@ -347,6 +347,9 @@ class GameDashboard:
             print('Vencedor: '+self.room.playersAlive[0][0]+'\n')
         else:
             # acabou o round, chama votação
+            self.room.word = None
+            self.room._answer = None
+            self.room._canAnswer = False
             self.poll()
 
 
