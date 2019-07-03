@@ -2,14 +2,14 @@
 
 import time
 
-from core.rooms import *
-from network.core.hlpct.package_coding import *
-from network.core.tools.p2p_tools import *
+from .core.rooms import *
+from .network.core.hlpct.package_coding import *
+from .network.core.tools.p2p_tools import *
 
-from core.tools.addressTools import *
-from core.tools.roomSuport import *
-from core.tools.print_tools import *
-from core.threads.roomsList_thread import *
+from .core.tools.addressTools import *
+from .core.tools.roomSuport import *
+from .core.tools.print_tools import *
+from .core.threads.roomsList_thread import *
 
 class GameDashboard:
     def __init__(self, myNickname, network):
@@ -41,12 +41,12 @@ class GameDashboard:
             self.room._start = True
             self.room.playersAlive = self.room.playersList
             self._sendStartMatch(numberOfPlayers)
-            print('A partida iniciará em breve!')
+            print('A partida iniciará em breve!\n')
             time.sleep(2)
             self.poll()
 
         else:
-            return False
+            raise 'PlayersNumInvalid'
 
     def poll(self):
         self.room.permissionToVote = True
@@ -82,8 +82,11 @@ class GameDashboard:
         self.room.permissionToVote = False
 
     def _startRound(self):
+        self.room.round += 1
+        print('Rodada '+str(self.room.round))
         if self.myNickname == self.room.master:
             # sou o líder
+            print('Você é o líder...')
             correctWord = input('Palavra da rodada: ')
             print('Separe as silábas por "-" \n')
             correctDivision = input('Divisão silábica correta: ')
@@ -111,7 +114,8 @@ class GameDashboard:
                     timer = simpleThread(self._stopwatch2)
                     selection = simpleThread(self._answer)
                     timer.start()
-                    selection.start()
+                    if self.room.startRound:
+                        selection.start()
                     break
 
     def _answer(self):
@@ -174,13 +178,6 @@ class GameDashboard:
 
             if len(self.room.playersList) == self.room.numPlayers:
                 self.startMatch()
-
-        elif int(package[2]) == 1:
-            #espectador
-            '''
-            faltando
-            '''
-            pass
 
         else:
             #caso não haja vaga ou jogo já iniciou e ele queira jogar
@@ -253,12 +250,12 @@ class GameDashboard:
 
     def _voteComputing(self, vote):
         try:
-            print(str('vote'))
             self.room.countVotes[str(vote)] += 1
         except:
             pass
 
     def _sync(self, package):
+        print('A partida iniciará em breve!\n')
         message = package[3]
         numberOfPlayerinMatch = int(message)
         roomID = self._network.idRoom
@@ -347,9 +344,10 @@ class GameDashboard:
             print('Vencedor: '+self.room.playersAlive[0][0]+'\n')
         else:
             # acabou o round, chama votação
-            self.room.word = None
-            self.room._answer = None
+            self.room.word = ''
+            self.room._answer = ''
             self.room._canAnswer = False
+            beautifulTable(self.room.playersAlive)
             self.poll()
 
 
@@ -367,5 +365,6 @@ class GameDashboard:
         '''
         time.sleep(15)
         self.room._canAnswer = False
+        self.room.startRound = False
         ''' chama o fim da rodada '''
         self._roundResult()

@@ -1,10 +1,10 @@
 #coding: utf-8
 
-from gameControl import *
-from network.p2p import *
+from .gameControl import *
+from .network.p2p import *
 
-from core.tools.roomSuport import *
-from core.threads.roomsList_thread import *
+from .core.tools.roomSuport import *
+from .core.threads.roomsList_thread import *
 
 class Client:
     def __init__(self, nickname):
@@ -20,7 +20,7 @@ class Client:
         refreshRooms.start()
 
 
-    def createRoom(self, idRoom:int, maxPlayers):
+    def createGameRoom(self, idRoom:int, maxPlayers:int):
         time.sleep(1)
         if not(idRoom in self.listOfRooms.keys()):
             self.room.create(idRoom, maxPlayers)
@@ -40,6 +40,11 @@ class Client:
             multicastToMyNetwork([addr], package)
             #anota no fakeID o ID da sala em questão
             self.network._fakeID = idRoom
+            time.sleep(1)
+            if self.network._fakeID != None:
+                return True
+            else:
+                return False
         else:
             return False
 

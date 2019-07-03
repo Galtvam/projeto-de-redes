@@ -98,7 +98,6 @@ class P2P:
                 elif commandID == b'00111':
                     self.inRoom = False
                     self._fakeID = None
-                    print('Falha ao entrar na partida')
 
                 elif commandID == b'01000':
                     self._packagesQueue.append((addressReceived, commandID, message))
